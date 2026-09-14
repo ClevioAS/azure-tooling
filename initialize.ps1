@@ -1,6 +1,8 @@
 param (
     [string]$Username,
-    [string]$CertificateCommonName = $null
+    [string]$CertificateCommonName = $null,
+    [boolean]$AssignSslCertificatePermissionsAtStartup = $true,
+    [int]$AssignSslCertificatePermissionsIntervalMinutes = 0
 )
 
 .\apply-telemetry-settings.ps1
@@ -16,7 +18,7 @@ $hasTaskScheduler = Test-Path ".\schedule-task.ps1"
 if ($CertificateCommonName) {
     .\assign-ssl-certificate-permissions.ps1 -CertificateCommonName $CertificateCommonName
     if ($hasTaskScheduler) {
-        .\schedule-task.ps1 -TaskName "AssignSSLCertificatePermissions" -ScriptPath ".\assign-ssl-certificate-permissions.ps1" -ScriptArguments "-CertificateCommonName `"$CertificateCommonName`""
+        .\schedule-task.ps1 -TaskName "AssignSSLCertificatePermissions" -ScriptPath ".\assign-ssl-certificate-permissions.ps1" -ScriptArguments "-CertificateCommonName `"$CertificateCommonName`"" -AtStartup $AssignSslCertificatePermissionsAtStartup -IntervalMinutes $AssignSslCertificatePermissionsIntervalMinutes
     }
 }
 
